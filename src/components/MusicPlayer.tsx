@@ -29,6 +29,31 @@ export default function MusicPlayer() {
     audio.addEventListener("loadedmetadata", updateDuration);
     audio.addEventListener("ended", handleEnded);
 
+    // 1. Attempt to play immediately on load
+    audio.play().then(() => {
+      setIsPlaying(true);
+    }).catch(() => {
+      // Autoplay blocked by browser policy until first user interaction
+    });
+
+    // 2. Play automatically on the user's first click, scroll, touch, or key press on the website
+    const handleFirstInteraction = () => {
+      if (audio.paused) {
+        audio.play().then(() => {
+          setIsPlaying(true);
+        }).catch(() => {});
+      }
+      window.removeEventListener("click", handleFirstInteraction);
+      window.removeEventListener("keydown", handleFirstInteraction);
+      window.removeEventListener("touchstart", handleFirstInteraction);
+      window.removeEventListener("scroll", handleFirstInteraction);
+    };
+
+    window.addEventListener("click", handleFirstInteraction);
+    window.addEventListener("keydown", handleFirstInteraction);
+    window.addEventListener("touchstart", handleFirstInteraction);
+    window.addEventListener("scroll", handleFirstInteraction);
+
     // Attempt to load duration right away if metadata is already loaded
     if (audio.readyState >= 1) {
       updateDuration();
@@ -38,6 +63,10 @@ export default function MusicPlayer() {
       audio.removeEventListener("timeupdate", updateTime);
       audio.removeEventListener("loadedmetadata", updateDuration);
       audio.removeEventListener("ended", handleEnded);
+      window.removeEventListener("click", handleFirstInteraction);
+      window.removeEventListener("keydown", handleFirstInteraction);
+      window.removeEventListener("touchstart", handleFirstInteraction);
+      window.removeEventListener("scroll", handleFirstInteraction);
     };
   }, []);
 
@@ -104,7 +133,8 @@ export default function MusicPlayer() {
       <audio
         ref={audioRef}
         src="/laskar-pelangi.mp3"
-        preload="metadata"
+        preload="auto"
+        autoPlay
         loop
       />
 
