@@ -29,48 +29,36 @@ export default function MusicPlayer() {
     audio.addEventListener("loadedmetadata", updateDuration);
     audio.addEventListener("ended", handleEnded);
 
-    // 1. Attempt to play immediately and retry until playback starts
-    const attemptPlay = () => {
-      if (audio.paused) {
-        audio.play().then(() => {
-          setIsPlaying(true);
-        }).catch(() => {});
-      }
+    // Auto-play: try immediately, then wait for first user gesture
+    const hasAutoPlayed = { current: false };
+
+    const cleanupListeners = () => {
+      window.removeEventListener("click", onFirstGesture);
+      window.removeEventListener("touchstart", onFirstGesture);
+      window.removeEventListener("keydown", onFirstGesture);
     };
 
-    attemptPlay();
-    const autoplayInterval = setInterval(() => {
-      if (!audio.paused) {
+    const onFirstGesture = () => {
+      if (hasAutoPlayed.current) return;
+      hasAutoPlayed.current = true;
+      audio.play().then(() => {
         setIsPlaying(true);
-        clearInterval(autoplayInterval);
-      } else {
-        attemptPlay();
-      }
-    }, 1500);
-
-    // 2. Play automatically on the user's first click, tap, or keypress anywhere on the page
-    const handleFirstInteraction = () => {
-      if (audio.paused) {
-        audio.play().then(() => {
-          setIsPlaying(true);
-          clearInterval(autoplayInterval);
-          window.removeEventListener("click", handleFirstInteraction);
-          window.removeEventListener("keydown", handleFirstInteraction);
-          window.removeEventListener("touchstart", handleFirstInteraction);
-          window.removeEventListener("pointerdown", handleFirstInteraction);
-          window.removeEventListener("mousedown", handleFirstInteraction);
-        }).catch(() => {});
-      }
+      }).catch(() => {
+        hasAutoPlayed.current = false; // allow retry if it still fails
+      });
+      cleanupListeners();
     };
 
-    window.addEventListener("click", handleFirstInteraction);
-    window.addEventListener("keydown", handleFirstInteraction);
-    window.addEventListener("touchstart", handleFirstInteraction);
-    window.addEventListener("pointerdown", handleFirstInteraction);
-    window.addEventListener("mousedown", handleFirstInteraction);
-    window.addEventListener("scroll", handleFirstInteraction);
-    window.addEventListener("wheel", handleFirstInteraction);
-    window.addEventListener("mousemove", handleFirstInteraction);
+    // 1. Try to play immediately (works if browser allows autoplay)
+    audio.play().then(() => {
+      hasAutoPlayed.current = true;
+      setIsPlaying(true);
+    }).catch(() => {
+      // Browser blocked autoplay — wait for first user gesture
+      window.addEventListener("click", onFirstGesture);
+      window.addEventListener("touchstart", onFirstGesture);
+      window.addEventListener("keydown", onFirstGesture);
+    });
 
     // Attempt to load duration right away if metadata is already loaded
     if (audio.readyState >= 1) {
@@ -78,18 +66,10 @@ export default function MusicPlayer() {
     }
 
     return () => {
-      clearInterval(autoplayInterval);
       audio.removeEventListener("timeupdate", updateTime);
       audio.removeEventListener("loadedmetadata", updateDuration);
       audio.removeEventListener("ended", handleEnded);
-      window.removeEventListener("click", handleFirstInteraction);
-      window.removeEventListener("keydown", handleFirstInteraction);
-      window.removeEventListener("touchstart", handleFirstInteraction);
-      window.removeEventListener("pointerdown", handleFirstInteraction);
-      window.removeEventListener("mousedown", handleFirstInteraction);
-      window.removeEventListener("scroll", handleFirstInteraction);
-      window.removeEventListener("wheel", handleFirstInteraction);
-      window.removeEventListener("mousemove", handleFirstInteraction);
+      cleanupListeners();
     };
   }, []);
 
