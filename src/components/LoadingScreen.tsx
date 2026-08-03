@@ -12,8 +12,6 @@ const words = ["Jothem Studio", "Game Community", "Bentengan '26"];
 export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
   const [count, setCount] = React.useState(0);
   const [wordIndex, setWordIndex] = React.useState(0);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const countRef = useRef(0);
   const onCompleteRef = useRef(onComplete);
   const doneRef = useRef(false);
 
@@ -23,31 +21,18 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
 
   useEffect(() => {
     // Counter: increments by 2 every 25ms → reaches 100 in ~1.25s
-    intervalRef.current = setInterval(() => {
-      countRef.current += 2;
-      if (countRef.current >= 100) {
-        countRef.current = 100;
-        setCount(100);
-        if (intervalRef.current) {
-          clearInterval(intervalRef.current);
-          intervalRef.current = null;
+    const interval = setInterval(() => {
+      setCount((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          return 100;
         }
-        if (!doneRef.current) {
-          doneRef.current = true;
-          setTimeout(() => {
-            onCompleteRef.current();
-          }, 400);
-        }
-      } else {
-        setCount(countRef.current);
-      }
+        return prev + 2;
+      });
     }, 25);
 
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
+      clearInterval(interval);
     };
   }, []);
 
@@ -94,7 +79,25 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
 
       {/* Bottom area: counter and progress bar */}
       <div className="flex flex-col gap-6">
-        <div className="flex justify-end items-end">
+        <div className="flex justify-between items-end">
+          {count === 100 ? (
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              onClick={() => {
+                window.dispatchEvent(new CustomEvent("start-music"));
+                onComplete();
+              }}
+              className="px-6 py-3 bg-white text-black font-semibold text-xs md:text-sm uppercase tracking-[0.25em] rounded-full hover:bg-white/90 hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(255,255,255,0.4)] flex items-center gap-3 cursor-pointer"
+            >
+              <span>Enter Website</span>
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+            </motion.button>
+          ) : (
+            <span className="text-xs text-muted font-mono uppercase tracking-widest">
+              Loading Assets...
+            </span>
+          )}
           <span className="text-6xl md:text-8xl lg:text-9xl font-display text-text-primary tabular-nums leading-none">
             {String(count).padStart(3, "0")}
           </span>

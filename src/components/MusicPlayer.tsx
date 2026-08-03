@@ -63,6 +63,7 @@ export default function MusicPlayer() {
       }
     };
 
+    window.addEventListener("start-music", handleFirstInteraction);
     window.addEventListener("click", handleFirstInteraction);
     window.addEventListener("keydown", handleFirstInteraction);
     window.addEventListener("touchstart", handleFirstInteraction);
@@ -79,6 +80,7 @@ export default function MusicPlayer() {
       audio.removeEventListener("timeupdate", updateTime);
       audio.removeEventListener("loadedmetadata", updateDuration);
       audio.removeEventListener("ended", handleEnded);
+      window.removeEventListener("start-music", handleFirstInteraction);
       window.removeEventListener("click", handleFirstInteraction);
       window.removeEventListener("keydown", handleFirstInteraction);
       window.removeEventListener("touchstart", handleFirstInteraction);
