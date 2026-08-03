@@ -63,12 +63,14 @@ export default function MusicPlayer() {
       }
     };
 
-    window.addEventListener("start-music", handleFirstInteraction);
     window.addEventListener("click", handleFirstInteraction);
     window.addEventListener("keydown", handleFirstInteraction);
     window.addEventListener("touchstart", handleFirstInteraction);
     window.addEventListener("pointerdown", handleFirstInteraction);
     window.addEventListener("mousedown", handleFirstInteraction);
+    window.addEventListener("scroll", handleFirstInteraction);
+    window.addEventListener("wheel", handleFirstInteraction);
+    window.addEventListener("mousemove", handleFirstInteraction);
 
     // Attempt to load duration right away if metadata is already loaded
     if (audio.readyState >= 1) {
@@ -80,12 +82,14 @@ export default function MusicPlayer() {
       audio.removeEventListener("timeupdate", updateTime);
       audio.removeEventListener("loadedmetadata", updateDuration);
       audio.removeEventListener("ended", handleEnded);
-      window.removeEventListener("start-music", handleFirstInteraction);
       window.removeEventListener("click", handleFirstInteraction);
       window.removeEventListener("keydown", handleFirstInteraction);
       window.removeEventListener("touchstart", handleFirstInteraction);
       window.removeEventListener("pointerdown", handleFirstInteraction);
       window.removeEventListener("mousedown", handleFirstInteraction);
+      window.removeEventListener("scroll", handleFirstInteraction);
+      window.removeEventListener("wheel", handleFirstInteraction);
+      window.removeEventListener("mousemove", handleFirstInteraction);
     };
   }, []);
 

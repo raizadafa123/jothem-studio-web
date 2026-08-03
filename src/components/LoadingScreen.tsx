@@ -25,6 +25,12 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       setCount((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
+          if (!doneRef.current) {
+            doneRef.current = true;
+            setTimeout(() => {
+              onCompleteRef.current();
+            }, 400);
+          }
           return 100;
         }
         return prev + 2;
@@ -80,24 +86,9 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       {/* Bottom area: counter and progress bar */}
       <div className="flex flex-col gap-6">
         <div className="flex justify-between items-end">
-          {count === 100 ? (
-            <motion.button
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              onClick={() => {
-                window.dispatchEvent(new CustomEvent("start-music"));
-                onComplete();
-              }}
-              className="px-6 py-3 bg-white text-black font-semibold text-xs md:text-sm uppercase tracking-[0.25em] rounded-full hover:bg-white/90 hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(255,255,255,0.4)] flex items-center gap-3 cursor-pointer"
-            >
-              <span>Enter Website</span>
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-            </motion.button>
-          ) : (
-            <span className="text-xs text-muted font-mono uppercase tracking-widest">
-              Loading Assets...
-            </span>
-          )}
+          <span className="text-xs text-muted font-mono uppercase tracking-widest">
+            {count === 100 ? "Ready." : "Loading Assets..."}
+          </span>
           <span className="text-6xl md:text-8xl lg:text-9xl font-display text-text-primary tabular-nums leading-none">
             {String(count).padStart(3, "0")}
           </span>
