@@ -29,30 +29,45 @@ export default function MusicPlayer() {
     audio.addEventListener("loadedmetadata", updateDuration);
     audio.addEventListener("ended", handleEnded);
 
-    // 1. Attempt to play immediately on load
-    audio.play().then(() => {
-      setIsPlaying(true);
-    }).catch(() => {
-      // Autoplay blocked by browser policy until first user interaction
-    });
-
-    // 2. Play automatically on the user's first click, scroll, touch, or key press on the website
-    const handleFirstInteraction = () => {
+    // 1. Attempt to play immediately and retry until playback starts
+    const attemptPlay = () => {
       if (audio.paused) {
         audio.play().then(() => {
           setIsPlaying(true);
         }).catch(() => {});
       }
-      window.removeEventListener("click", handleFirstInteraction);
-      window.removeEventListener("keydown", handleFirstInteraction);
-      window.removeEventListener("touchstart", handleFirstInteraction);
-      window.removeEventListener("scroll", handleFirstInteraction);
+    };
+
+    attemptPlay();
+    const autoplayInterval = setInterval(() => {
+      if (!audio.paused) {
+        setIsPlaying(true);
+        clearInterval(autoplayInterval);
+      } else {
+        attemptPlay();
+      }
+    }, 1500);
+
+    // 2. Play automatically on the user's first click, tap, or keypress anywhere on the page
+    const handleFirstInteraction = () => {
+      if (audio.paused) {
+        audio.play().then(() => {
+          setIsPlaying(true);
+          clearInterval(autoplayInterval);
+          window.removeEventListener("click", handleFirstInteraction);
+          window.removeEventListener("keydown", handleFirstInteraction);
+          window.removeEventListener("touchstart", handleFirstInteraction);
+          window.removeEventListener("pointerdown", handleFirstInteraction);
+          window.removeEventListener("mousedown", handleFirstInteraction);
+        }).catch(() => {});
+      }
     };
 
     window.addEventListener("click", handleFirstInteraction);
     window.addEventListener("keydown", handleFirstInteraction);
     window.addEventListener("touchstart", handleFirstInteraction);
-    window.addEventListener("scroll", handleFirstInteraction);
+    window.addEventListener("pointerdown", handleFirstInteraction);
+    window.addEventListener("mousedown", handleFirstInteraction);
 
     // Attempt to load duration right away if metadata is already loaded
     if (audio.readyState >= 1) {
@@ -60,13 +75,15 @@ export default function MusicPlayer() {
     }
 
     return () => {
+      clearInterval(autoplayInterval);
       audio.removeEventListener("timeupdate", updateTime);
       audio.removeEventListener("loadedmetadata", updateDuration);
       audio.removeEventListener("ended", handleEnded);
       window.removeEventListener("click", handleFirstInteraction);
       window.removeEventListener("keydown", handleFirstInteraction);
       window.removeEventListener("touchstart", handleFirstInteraction);
-      window.removeEventListener("scroll", handleFirstInteraction);
+      window.removeEventListener("pointerdown", handleFirstInteraction);
+      window.removeEventListener("mousedown", handleFirstInteraction);
     };
   }, []);
 
