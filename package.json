@@ -1,0 +1,34 @@
+{
+  "name": "web-jothem",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@gsap/react": "^2.1.2",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.43.0",
+    "gsap": "^3.15.0",
+    "hls.js": "^1.6.16",
+    "lucide-react": "^1.28.0",
+    "next": "^13.5.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwind-merge": "^3.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "autoprefixer": "^10.5.4",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^13.5.6",
+    "postcss": "^8.5.25",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^5"
+  }
+}
