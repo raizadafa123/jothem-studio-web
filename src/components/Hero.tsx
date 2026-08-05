@@ -96,7 +96,7 @@ export default function Hero() {
           {/* Solid See Works */}
           <a
             href="#work"
-            className="group relative rounded-full text-sm font-medium px-7 py-3.5 bg-text-primary text-bg transition-all duration-300 hover:scale-105 hover:bg-bg hover:text-text-primary overflow-hidden shadow-lg"
+            className="group relative rounded-full text-sm font-medium px-7 py-3.5 bg-text-primary text-bg transition-all duration-300 hover:scale-105 active:scale-95 hover:bg-bg hover:text-text-primary overflow-hidden shadow-lg"
           >
             <span className="absolute inset-0 rounded-full accent-gradient opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             <span className="absolute inset-[2px] rounded-full bg-bg opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
@@ -106,7 +106,7 @@ export default function Hero() {
           {/* Outlined Reach out */}
           <a
             href="#contact"
-            className="group relative rounded-full text-sm font-medium px-7 py-3.5 border-2 border-stroke bg-bg/80 backdrop-blur-sm text-text-primary transition-all duration-300 hover:scale-105 hover:border-transparent overflow-hidden shadow-lg"
+            className="group relative rounded-full text-sm font-medium px-7 py-3.5 border-2 border-stroke bg-bg/80 backdrop-blur-sm text-text-primary transition-all duration-300 hover:scale-105 active:scale-95 hover:border-transparent overflow-hidden shadow-lg"
           >
             <span className="absolute inset-0 rounded-full accent-gradient opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             <span className="absolute inset-[2px] rounded-full bg-bg opacity-0 transition-opacity duration-300 group-hover:opacity-100" />

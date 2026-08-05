@@ -1,12 +1,20 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import LightboxModal, { ExplorationItem } from "./LightboxModal";
+
+function useIsTouchDevice() {
+  const [isTouch, setIsTouch] = useState(false);
+  useEffect(() => {
+    setIsTouch("ontouchstart" in window || navigator.maxTouchPoints > 0);
+  }, []);
+  return isTouch;
+}
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -84,6 +92,7 @@ export default function Explorations() {
   const colLeftRef = useRef<HTMLDivElement>(null);
   const colRightRef = useRef<HTMLDivElement>(null);
   const [selectedItem, setSelectedItem] = useState<ExplorationItem | null>(null);
+  const isTouch = useIsTouchDevice();
 
   useGSAP(
     () => {
@@ -186,14 +195,17 @@ export default function Explorations() {
                     }}
                     initial={{ rotate: item.rotation }}
                     animate={{ rotate: item.rotation }}
-                    whileHover={{
-                      y: -12,
-                      rotate: "0deg",
-                      scale: 1.02,
-                      boxShadow: "0 25px 50px -12px rgba(255, 255, 255, 0.25)",
-                      borderColor: "rgba(255, 255, 255, 0.5)",
-                      zIndex: 40,
-                    }}
+                    {...(!isTouch && {
+                      whileHover: {
+                        y: -12,
+                        rotate: "0deg",
+                        scale: 1.02,
+                        boxShadow: "0 25px 50px -12px rgba(255, 255, 255, 0.25)",
+                        borderColor: "rgba(255, 255, 255, 0.5)",
+                        zIndex: 40,
+                      },
+                    })}
+                    whileTap={{ scale: 0.97 }}
                     transition={{ type: "spring", stiffness: 350, damping: 25 }}
                     className={`group relative w-full max-w-[280px] md:max-w-[340px] aspect-square rounded-3xl overflow-hidden ${item.href ? 'bg-grid' : 'bg-surface'} border border-white/10 shadow-2xl cursor-pointer pointer-events-auto transition-colors duration-300`}
                   >
@@ -205,9 +217,9 @@ export default function Explorations() {
 
                     {/* Interactive Top-Right Badge */}
                     {item.href && (
-                      <div className="absolute top-4 right-4 z-20 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-white/80 text-xs font-medium transform translate-y-1 opacity-80 group-hover:translate-y-0 group-hover:opacity-100 group-hover:bg-white group-hover:text-black group-hover:border-white transition-all duration-300 shadow-lg">
+                      <div className="absolute top-4 right-4 z-20 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-white/80 text-xs font-medium transform translate-y-1 opacity-80 group-hover:translate-y-0 group-hover:opacity-100 group-hover:bg-white group-hover:text-black group-hover:border-white active:translate-y-0 active:opacity-100 active:bg-white active:text-black active:border-white transition-all duration-300 shadow-lg">
                         <span>Roblox Profile</span>
-                        <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-0.5 transition-transform" />
+                        <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-0.5 active:translate-x-0.5 transition-transform" />
                       </div>
                     )}
 
@@ -241,14 +253,17 @@ export default function Explorations() {
                     }}
                     initial={{ rotate: item.rotation }}
                     animate={{ rotate: item.rotation }}
-                    whileHover={{
-                      y: -12,
-                      rotate: "0deg",
-                      scale: 1.02,
-                      boxShadow: "0 25px 50px -12px rgba(255, 255, 255, 0.25)",
-                      borderColor: "rgba(255, 255, 255, 0.5)",
-                      zIndex: 40,
-                    }}
+                    {...(!isTouch && {
+                      whileHover: {
+                        y: -12,
+                        rotate: "0deg",
+                        scale: 1.02,
+                        boxShadow: "0 25px 50px -12px rgba(255, 255, 255, 0.25)",
+                        borderColor: "rgba(255, 255, 255, 0.5)",
+                        zIndex: 40,
+                      },
+                    })}
+                    whileTap={{ scale: 0.97 }}
                     transition={{ type: "spring", stiffness: 350, damping: 25 }}
                     className={`group relative w-full max-w-[280px] md:max-w-[340px] aspect-square rounded-3xl overflow-hidden ${item.href ? 'bg-grid' : 'bg-surface'} border border-white/10 shadow-2xl cursor-pointer pointer-events-auto transition-colors duration-300`}
                   >
@@ -260,9 +275,9 @@ export default function Explorations() {
 
                     {/* Interactive Top-Right Badge */}
                     {item.href && (
-                      <div className="absolute top-4 right-4 z-20 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-white/80 text-xs font-medium transform translate-y-1 opacity-80 group-hover:translate-y-0 group-hover:opacity-100 group-hover:bg-white group-hover:text-black group-hover:border-white transition-all duration-300 shadow-lg">
+                      <div className="absolute top-4 right-4 z-20 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-white/80 text-xs font-medium transform translate-y-1 opacity-80 group-hover:translate-y-0 group-hover:opacity-100 group-hover:bg-white group-hover:text-black group-hover:border-white active:translate-y-0 active:opacity-100 active:bg-white active:text-black active:border-white transition-all duration-300 shadow-lg">
                         <span>Roblox Profile</span>
-                        <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-0.5 transition-transform" />
+                        <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-0.5 active:translate-x-0.5 transition-transform" />
                       </div>
                     )}
 

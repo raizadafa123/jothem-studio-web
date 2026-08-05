@@ -5,6 +5,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, X } from "lucide-react";
 import { clsx } from "clsx";
 
+function useIsTouchDevice() {
+  const [isTouch, setIsTouch] = useState(false);
+  useEffect(() => {
+    setIsTouch(
+      "ontouchstart" in window || navigator.maxTouchPoints > 0
+    );
+  }, []);
+  return isTouch;
+}
+
 interface ProjectCard {
   title: string;
   category: string;
@@ -51,6 +61,7 @@ const projects: ProjectCard[] = [
 
 export default function SelectedWorks() {
   const [selectedProject, setSelectedProject] = useState<ProjectCard | null>(null);
+  const isTouch = useIsTouchDevice();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -120,11 +131,14 @@ export default function SelectedWorks() {
               onClick={() => setSelectedProject(project)}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              whileHover={{
-                y: -12,
-                boxShadow: "0 25px 50px -12px rgba(255, 255, 255, 0.22)",
-                borderColor: "rgba(255, 255, 255, 0.5)",
-              }}
+              {...(!isTouch && {
+                whileHover: {
+                  y: -12,
+                  boxShadow: "0 25px 50px -12px rgba(255, 255, 255, 0.22)",
+                  borderColor: "rgba(255, 255, 255, 0.5)",
+                },
+              })}
+              whileTap={{ scale: 0.97 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.3, ease: "easeOut" }}
               className={clsx(
@@ -151,9 +165,9 @@ export default function SelectedWorks() {
               />
 
               {/* Interactive Top-Right UI Badge */}
-              <div className="absolute top-6 right-6 z-20 flex items-center gap-2 px-4 py-2 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-white/80 text-xs font-medium transform translate-y-1 opacity-80 group-hover:translate-y-0 group-hover:opacity-100 group-hover:bg-white group-hover:text-black group-hover:border-white transition-all duration-300 shadow-lg">
+              <div className="absolute top-6 right-6 z-20 flex items-center gap-2 px-4 py-2 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-white/80 text-xs font-medium transform translate-y-1 opacity-80 group-hover:translate-y-0 group-hover:opacity-100 group-hover:bg-white group-hover:text-black group-hover:border-white active:translate-y-0 active:opacity-100 active:bg-white active:text-black active:border-white transition-all duration-300 shadow-lg">
                 <span>View Screenshot</span>
-                <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-0.5 transition-transform" />
+                <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-0.5 active:translate-x-0.5 transition-transform" />
               </div>
 
               {/* Bottom caption */}

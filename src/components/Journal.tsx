@@ -123,8 +123,8 @@ export default function Journal() {
                 <span className="text-xs sm:text-sm text-muted font-mono">
                   {entry.date}
                 </span>
-                <div className="w-9 h-9 rounded-full bg-bg border border-white/20 flex items-center justify-center transition-all duration-300 group-hover:bg-white group-hover:text-black group-hover:border-white">
-                  <ArrowRight className="w-4 h-4 text-text-primary group-hover:text-black transform group-hover:translate-x-0.5 transition-transform" />
+                <div className="w-9 h-9 rounded-full bg-bg border border-white/20 flex items-center justify-center transition-all duration-300 group-hover:bg-white group-hover:text-black group-hover:border-white group-active:bg-white group-active:text-black group-active:border-white">
+                  <ArrowRight className="w-4 h-4 text-text-primary group-hover:text-black group-active:text-black transform group-hover:translate-x-0.5 transition-transform" />
                 </div>
               </div>
             </motion.div>
